@@ -1,0 +1,118 @@
+{#% extends "base.html" %#}
+
+{% block main_content %}
+
+<html lang="es">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+
+{% if wrong_password %}
+	<div class='alert alert-danger text-center'><h2>Usuario y Password incorrectos.</h2></div>
+{% endif %}
+<br/>
+
+{% if section == 'recuperar-clave' %}
+<div id='recuperar-clave'>
+	<div class='container'>
+		<div class='row vertical-center'>
+			<div class='col-lg-4 col-md-4 col-sm-2 col-xs-0'></div>
+			<div class='col-lg-4 col-md-4 col-sm-8 col-xs-12'>
+				<div class='panel panel-default'>
+					<div class="panel-heading">Recuperar Clave</div>
+						<div class="panel-body">
+						<form id='login-form' method='post' action="{{ url_for('login_blueprint.recuperar_clave') }}">
+							<div class="input-group">
+								<div class="input-group-addon"><span class='glyphicon glyphicon-user'></span></div>
+								<input type="text" name='email' class="form-control"  placeholder="Email">
+							</div>
+              {#
+							<div class="input-group">
+								<div class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></div>
+								<input type="password" name='password' class="form-control" placeholder="Password">
+							</div>
+              #}
+							<br/>
+              <div class='row text-center' style='margin-bottom:20px;'>
+                <button type="submit" class="btn btn-info">Continuar</button>
+              </div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class='col-lg-4 col-md-4 col-sm-2 col-xs-0'></div>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+
+{% if section == 'recuperar-clave-3' %}
+<div class='row'>
+  <div class='col-sm-12 text-center'>
+    <div class="alert alert-success text-center" role="alert">
+      <h3>Te enviamos un correo con tu nueva contraseña.</h3>
+    </div>
+    <a class='btn btn-success' href='{{ url_for('main') }}'>Aceptar</a>
+  </div>
+</div>
+{% endif %}
+
+{% if section == 'recuperar-clave-2' %}
+<div class='row'>
+  <div class='col-sm-12 text-center'>
+    <div class="alert alert-success text-center" role="alert">
+      <h3>Te enviamos un correo. Por favor revísalo y sigue las instrucciones.</h3>
+    </div>
+    <a class='btn btn-success' href='{{ url_for('main') }}'>Aceptar</a>
+  </div>
+</div>
+{% endif %}
+
+{% if not section %}
+<div id='login'>
+	<div class='container'>
+    <div class='row text-center' style='margin-bottom:2em;'>
+      <a href="{{ url_for('main') }}"><img class='img-responsive' style='margin:0 auto;'  src='{{ url_for('static', filename='img/logo-cserrano.png') }}'></a>
+    </div>
+		<div class='row vertical-center'>
+			<div class='col-lg-4 col-md-4 col-sm-2 col-xs-0'></div>
+			<div class='col-lg-4 col-md-4 col-sm-8 col-xs-12'>
+
+				<div class='panel panel-default'>
+					<div class="panel-heading">Ingresar</div>
+						<div class="panel-body">
+						<form id='login-form' method='post' action="{{ url_for('login_blueprint.login') }}">
+							<div class="input-group">
+								<div class="input-group-addon"><span class='glyphicon glyphicon-user'></span></div>
+								<input type="text" name='email' class="form-control"  placeholder="Usuario">
+							</div>
+							<div class="input-group">
+								<div class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></div>
+								<input type="password" name='password' class="form-control" placeholder="Password">
+							</div>
+							<br/>
+              {#
+              <div class='row text-center'>
+                <a href="{{ url_for('login_blueprint.recuperar_clave') }}">Recuperar Clave<a/>
+              </div>
+              #}
+              </br/>
+              <div class='row text-center' style='margin-bottom:20px;'>
+                <button type="submit" class="btn btn-danger">Entrar</button>
+              </div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class='col-lg-4 col-md-4 col-sm-2 col-xs-0'></div>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+{% endblock %}

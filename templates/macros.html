@@ -1,0 +1,326 @@
+{####################
+# CHANGE ACTIVE NAV #
+####################}
+<!-- Change Navigation Active (for later reference) -->
+{% macro nav_link(endpoint, text) %}
+{% if request.endpoint.endswith(endpoint) %}
+	<li class="active"><a href="{{ url_for(endpoint) }}">{{text}}</a></li>
+{% else %}
+	<li><a href="{{ url_for(endpoint) }}">{{text}}</a></li>
+{% endif %}
+{% endmacro %}
+
+{##################
+# BLUE IMP SLIDER #
+###################}
+{% macro blueimp_gallery() %}
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+	<div class="slides"></div>
+	<!--<h3 class="title"></h3>
+	<a class="prev">‹</a>
+	<a class="next">›</a>-->
+	<a class="close">×</a>
+	<a class="play-pause"></a>
+	<ol class="indicator"></ol>
+</div>
+{% endmacro %}
+
+{###############
+# DEFAULT FORM #
+################}
+{% macro default_form(data, model) %}
+{% if data.0.item_data %}
+  {% set item_data =  data.0.item_data.0 %}
+{% else %}
+  {% set item_data = None %}
+{% endif %}
+<form method='post' action=''>
+  {% for d in data %}
+    {% if item_data and d.normal_field %}
+      {% set value = item_data[d.normal_field.0] %}
+    {% elif item_data and d.foreign_field %}
+      {% set value = item_data[d.foreign_field.fields.1] %}
+    {% else %}
+      {% set value = '' %}
+    {% endif %}
+    
+    {% if d.normal_field %}
+      {% if d.normal_field.1 == 'integer' %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label class='' for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class='fa fa-cubes fa-fw'></span></div>
+            <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="number" class="form-control"  placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'percentage' %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label class='' for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class='fa fa-percent fa-fw'></span></div>
+            <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="number" step="any" class="form-control"  placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'email' %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label class='' for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}></label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class='glyphicon glyphicon-envelope'></span></div>
+            <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="email" class="form-control"  placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'url' %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label class='sr-only' for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class='glyphicon glyphicon-link'></span></div>
+            <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="url" class="form-control"  placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'textarea' %}
+      <div class='col-lg-12'>
+        <div class="form-group">
+          <label class='' for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}</label>
+          <textarea {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} class='ckeditor' name='{{ d.normal_field.0 }}'>{{ value }}</textarea>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'boolean' or d.normal_field.1 == 'status' %}
+      <div class='col-lg-6 col-md-6' >
+        <div class="form-group">
+          <label>
+            {{ d.normal_field.2 }}: &nbsp <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} type="checkbox" name='{{ d.normal_field.0 }}' class='checkboxpicker' data-size="small" data-on-text="|" data-off-text="O" {% if value or not item_data %} checked {% endif %} > 
+          </label>
+        </div>
+      </div>
+      {% elif d.normal_field.1 == 'fecha' or d.normal_field.1 == 'date' %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label for='{{ d.normal_field.0 }}'>{{ d.normal_field.2 }}</label>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+            <input class="form-control datepicker" {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="text"   placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class='col-lg-6 col-md-6'>
+        <div class="form-group">
+          <label class='' for='{{ d.normal_field.2 }}'>{{ d.normal_field.2 }}</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class='glyphicon glyphicon-pencil'></span></div>
+            <input {% if d.normal_field.0 in model.defaults.required.0 %} required {% endif %} value="{{ value }}" type="text" class="form-control" placeholder="{{ d.normal_field.2 }}" name='{{ d.normal_field.0 }}'>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endif %}
+    {% if d.foreign_field %}
+      <div class='col-lg-6 col-md-6'>
+          <label class='sr-only' for='{{ d.foreign_field.fields.1 }}'>{{ d.foreign_field.fields.6 }}</label>
+          <select 
+            class="form-control selectpicker" 
+            name='{{ d.foreign_field.fields.1 }}' 
+            data-live-search="true" 
+            data-header="{{ d.foreign_field.fields.6 }}"
+            data-title="{{ d.foreign_field.fields.6 }}"
+            {% if d.foreign_field.fields.1 in model.defaults.required %} required {% endif %}
+            >
+              {% for item in d.foreign_field['items'] %}
+                {% if item[d.foreign_field.fields.3] == value %}
+                  {% set selected = 'selected' %}
+                {% else %}
+                  {% set selected = None %}
+                {% endif %}
+                <option {{ selected }} value='{{ item[d.foreign_field.fields.3] }}'>{{ item[d.foreign_field.fields.4] }}</option>
+              {% endfor %}
+          </select>
+      </div>
+          <br/><br/>
+    {% endif %}
+  {% endfor %}
+  <style>
+  .btn + .btn{
+    margin-left:30px;
+  }
+  </style>
+  <div class='col-lg-12 text-center'>
+    <a class='btn btn-danger' href='../'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+    {% if item_data %}
+    <button type="submit" class="btn btn-info"><span class='glyphicon glyphicon-pencil'></span> Aceptar</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary"><span class='glyphicon glyphicon-plus'></span> Crear</button>
+    {% endif %}
+  </div>
+</form>
+{% endmacro %}
+
+{###################
+# RESPONSIVE TABLE #
+###################}
+{% macro responsive_table(data, settings = None) %}
+<div class="table-responsive">
+  <table class='table table-responsive table-striped' 
+    data-toggle="table" 
+    data-show-columns="true"
+    data-search="{% if settings.search %}{{ settings.search }}{% else %}true{% endif %}"
+    data-pagination="true"
+    data-page-size="25"
+    data-sort-name="id"
+    data-sort-order="desc"
+    data-show-export="true"
+    data-row-style="rowStyle"
+    data-show-toggle="true"
+    data-detail-view="false"
+    data-locale="es-cl"
+    data-icon-size="md"
+    data-icons-prefix="glyphicon"
+    showFooter="true"
+    {% if data.index %}
+    data-id-field="{{ data.index }}"
+    data-unique-id="{{ data.index }}"
+    {% endif %}
+    >
+    <thead>
+      <tr>
+        {% for thead in data.thead %}
+        <th data-field="{{ thead }}" data-sortable="true" class='text-center'>{{ thead }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data.tbody %}
+        <tr>
+        {% for value in row %}
+          <td data-field="" data-sortable="true" class='text-center'>{{ value|safe }}</td>
+        {% endfor %}
+        </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>$('table').bootstrapTable();</script>
+{% endmacro %}
+
+{################
+# DEFAULT TABLE #
+#################}
+{% macro default_table(model, data, settings) %}
+<div class='panel panel-default'>
+  <div class='panel-body'>
+    <div class="table-responsive">
+      <form method='post' action='' id='form1' enctype="multipart/form-data">
+        <table class='table table-responsive table-striped' 
+          data-toggle="table" 
+          data-show-columns="true"
+          data-search="true"
+          data-pagination="true"
+          data-page-size="25"
+          data-sort-name="id"
+          data-sort-order="desc"
+          data-show-export="true"
+          data-row-style="rowStyle"
+          data-show-toggle="true"
+          data-detail-view="false"
+          data-locale="es-cl"
+          data-icon-size="md"
+          data-icons-prefix="glyphicon"
+          showFooter="true"
+          {% for column in model.columns if column.1 == 'index' %}
+            data-id-field="{{ column.2 }}"
+            data-unique-id="{{ column.2 }}"
+          {% endfor %}
+          >
+          <thead>
+            <tr>
+              {% for field in model.defaults.view %}
+                {% for column in model.columns %}
+                  {% if field == column.0 %}
+                    <th data-field="{{ column.0 }}" data-sortable="true" class='text-center'>{{ column.2 }}</th>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+              <th class='text-center'><i class='fa fa-cogs fa-fw'></i>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for row in data %}
+              <tr>
+                {% for field in model.defaults.view %}
+                  <td>
+                    {% for column in model.columns if field == column[0] %}
+                      {% if column.1 == 'status' or column.1 == 'boolean': %}
+                        {% if row[field]: %}
+                          Activo
+                        {% else %}
+                          Inactivo
+                        {% endif %}
+                      {% elif column.1 == 'url': %}
+                      <a href='{{ row[field] }}' target='_blank'>{{ row[field] }}</a>
+                      {% else %}
+                        {{ row[field]|safe }}
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                {% endfor %}
+                <td>
+                  {% for column in model.columns if column.1 == 'index' %}
+                    {% if 'edit' in settings %}
+                    <a href="{{ request.url }}editar/{{ row[column.0] }}"><div class='btn btn-default' title='Editar'><i style='color:purple;' class="fa fa-pencil"></i> Editar</div></a>
+                    {% endif %}
+                    {% if 'delete' in settings %}
+                    <a href="{{ request.url }}eliminar/{{ row[column.0] }}"><div class='btn btn-default' title='Eliminar'><i style='color:red;' class="fa fa-times"></i> Eliminar</div></a>
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+<script>$('table').bootstrapTable();</script>
+{% endmacro %}
+
+{##############
+# POPUP MODAL #
+###############}
+{% macro popup_modal(
+  title = 'PopUp Modal', 
+  class_name = 'popup', 
+  btn = True, 
+  btn_text = 'PopUp',
+  iframe_src = ''
+) %}
+
+<div class='{{ class_name }}'>
+  <button style='{% if btn %}display:block;{% else %}display:none;{% endif %}' id='{{ class_name }}-main-modal-btn' type="button" class="btn btn-primary" data-toggle="modal" data-target=".{{ class_name }}-pupup-modal-lg">{{ btn_text }}</button>
+
+  <div class="modal fade {{ class_name }}-pupup-modal-lg" tabindex="-1" role="dialog" aria-labelledby="{{ class_name }}ModalLabel">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+    <div class="modal-header">
+      {{ title }}
+        <div type="button" class="iframe-close-btn" data-dismiss="modal" aria-label="Close"><span class='glyphicon glyphicon-remove' aria-hidden="true"></span></div>
+        <h4 class="modal-title" id="{{ class_name }}ModalLabel"></h4>
+        </div>
+        <div class="embed-responsive embed-responsive-16by9">
+          <div id='{{ class_name }}-iframe-container'>
+            <iframe id='{{ class_name }}-iframe' class="embed-responsive-item" src="{{ iframe_src }}" style='' frameborder='0'></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{% if model %}{{ model.title }}{% endif %}{% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{#% from 'macros.html' import blueimp_gallery with context %#}
+{% from 'macros.html' import default_table with context %}
+{% block main_content %}
+{#{ blueimp_gallery() }#}
+
+<div class='panel panel-default'>
+  <div class='panel-heading'>{{ model.title }}</div>
+  <div class='panel-body'>
+    <div class='row'>
+      <div class='row text-left'>
+        {% if 'create' in settings %}
+        <a href='{{ request.url }}crear'><div class='btn btn-success tooltip_on' title='Crear'><span class='glyphicon glyphicon-plus'></span> Crear</div></a>
+        {% endif %}
+        {% if model.defaults.import %}
+        <a href='{{ request.url }}import'><div class='btn btn-success tooltip_on' data-toggle="tooltip" title='Carga masiva de datos a través de archivo en formato Excel .xlsx'><span class='glyphicon glyphicon-cloud-upload'></span> Importar</div></a>
+        {% endif %}
+        {% if model.defaults.export %}
+        <a href='{{ request.url }}export'><div class='btn btn-info tooltip_on' data-toggle="tooltip" title='Exportar la base de datos en archivo en formato Excel .xlsx'><span class='glyphicon glyphicon-cloud-download'></span> Exportar</div></a>
+        {% endif %}
+      </div>
+      <br/>
+
+      {% if search_columns %}
+      <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+          <div class="input-group">
+            <input name="search" id="search_input" type="text" class="form-control" placeholder="Buscar" onkeyup="if(event.keyCode=='13'){search()}">
+            <span class="input-group-btn">
+              <button onclick="search()" class="btn btn-default" type="button">&nbsp;<span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+              <script>
+                function search(){
+                  window.location.href="{{ current_url }}search/" + $('#search_input').val();
+                }
+              </script>
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-3"></div>
+      </div>
+      <br/>
+      {% endif %}
+      {{ default_table(model, data, settings) }}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

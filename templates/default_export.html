@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{% if model %}{{ model.title }}{% endif %}{% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+<div class='row'>
+  {% if model %}
+    <h2>{{ model.title }}</h2>
+  {% else %}
+    <br/><br/>
+    <div class='alert alert-danger'>Falta Tabla</div>
+    <a class='btn btn-default' href="{{ url_for('admin') }}">Volver</a>
+  {% endif %}
+  <br/>
+  <form action="" method=post enctype=multipart/form-data>
+    <div class="form-group">
+      <a class='btn btn-info' href='{{ url_for("static", filename="assets/export/" + filename) }}' data-toggle="tooltip" title="Descargar un archivo .xlsx con campos de ejemplo."><span class='glyphicon glyphicon-download'></span> Descargar .xlsx</a>
+      <a class='btn btn-danger' href='../'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<script>
+$(document).ready(function()
+{
+	$("input[name=file]").change( function (){
+    var path = $("input[name=file]").val();
+    var filename = path.replace(/^.*\\/, "");
+    if (!filename){
+      filename = "Seleccionar Archivo";
+    }
+    $('#file_input').text( filename );
+	});
+});
+</script>
+{% endblock %}
+

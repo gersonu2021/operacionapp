@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} OK {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class="alert alert-success text-center" role="alert">
+        {% for message in messages %}
+          <ul
+            <li><p>{{ message|safe }}</p></li>
+          </ul>
+        {% endfor %}
+      </div>
+      <div class='text-center'>
+        {% if not href %}
+          {% set href = '../' %}
+        {% endif %}
+        {% if not btn %}
+          {% set btn = 'Aceptar' %}
+        {% endif %}
+
+
+        <a class='btn btn-success' href='{{ href }}'>{{ btn }}</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+

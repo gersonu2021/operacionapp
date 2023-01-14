@@ -1,0 +1,12 @@
+RewriteEngine On
+#RewriteRule ^/static/(.*) - [L]
+RewriteRule ^/static($|/.*) - [L]
+
+
+# ------------------------------------------------------------------------------
+# | PREVENT ACCESS ON PROTECTED FILES                                                                                   
+# ------------------------------------------------------------------------------
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|sqlite|db|tpl|inc)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>

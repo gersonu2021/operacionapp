@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+<h2>{{ model.title }}</h2>
+<br/>
+<div class='panel panel-default'>
+  <div class='panel-heading'>Eliminar</div>
+  <div class='panel-body'>
+    {% if deleted %}
+      <br/>
+      <div class='text-center'>
+        <div class="alert alert-success " role="alert">Eliminado correctamente.</div>
+        <a class='btn btn-success' href='../'>Aceptar</a>
+      </div>
+    {% else %}
+
+      {% if data %}
+        <h1> Confirmar Eliminar </h1>
+        <div class='text-center'>
+          <form action='' method=post>
+            <button type="submit" class="btn btn-danger"><span class='glyphicon glyphicon-pencil'></span> Eliminar</button>
+            <a class='btn btn-warning' href='../'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+          </form>
+        </div>
+      {% else %}
+        <h1>Ítem no existe</h1>
+        <a class='btn btn-warning' href='../'>Volver</a>
+      {% endif %}
+
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,57 @@
+<div id='navigation'>
+  <div class="col-sm-12 full_width nopadding">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand hidden-xs hidden-sm" href="{{ url_for('main') }}"><img class='img-responsive logo-cserrano' src='{{ url_for('static', filename='img/logo-cserrano.png') }}'></a>
+        </div>
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span> 
+          </button>
+          
+          <div class="collapse navbar-collapse" id="myNavbar">
+
+            {# ADMIN MENU #}
+            {% if user.tipo == 1 %}
+            <ul class="nav navbar-nav">
+              {% for main_nav in navigation %}
+              {% set current_path = request.path.split('/') %}
+              {% if main_nav.1.0 | length > 1 %}
+              {# HAS SUB MENU #}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ main_nav.0 }} <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  {% for submenu in main_nav.1 %}
+                  <li {% if submenu.1 == current_path.1 %}class="active"{% endif %}>
+                    <a href='{{ url_for('main') }}{% if submenu.1 %}{{ submenu.1 }}{% else %}en-construccion{% endif %}'>
+                      <i class="{{ submenu.2 }}"></i> {{ submenu.0 }}
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% else %}
+              {# NO SUB MENU #}
+              <li {% if main_nav.0 == current_path.1 %}class="active"{% endif %}>
+                <a href="{{ url_for('main') }}{{ main_nav.1 }}"> <i class='{{ main_nav.2 }}'></i> {{ main_nav.0 | upper }}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <ul class="nav navbar-nav navbar-right">
+              <li class="navbar-text visible-lg"><span class="datepicker" ><i class="fa fa-calendar" aria-hidden="true"></i> {{ now_date }}</span></li>
+              <li onclick="top.location.href='{{ url_for('login_blueprint.logout') }}'"><a href='#'><i class='fa fa-fw fa-lock'></i>LOGOUT</a></li>
+            </ul>
+          </div>
+
+      </div>
+    </nav>
+
+  </div>
+
+</div>
+

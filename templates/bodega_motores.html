@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %} Bodega Motores {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+
+{% from "macros.html" import responsive_table with context %}
+
+{% block main_content %}
+
+{% if section == 'main' %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Bodega Motores</h3>
+  </div>
+  <div class="panel-body">
+
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <div class="input-group">
+          <input name="search" id="search_input" type="number" class="form-control" placeholder="Buscar por Número de Presupuesto" onkeyup="if(event.keyCode=='13'){search()}">
+          <span class="input-group-btn">
+            <button onclick="search()" class="btn btn-default" type="button">&nbsp;<span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+            <script>
+              function search(){
+                window.location.href="{{ url_for('bodega_motores.main') }}search/" + $('#search_input').val();
+              }
+            </script>
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+
+    <div class='row'>
+      <a class="btn btn-success" href="{{ url_for('bodega_motores.crear') }}"><span class='glyphicon glyphicon-plus'></span> Crear</a>
+
+      <div class="table-responsive">
+        <table class='table table-responsive table-striped' 
+          data-toggle="table" 
+          data-show-columns="true"
+          data-search="false"
+          data-pagination="true"
+          data-page-size="25"
+          data-sort-name="id"
+          data-sort-order="desc"
+          data-show-export="true"
+          data-row-style="rowStyle"
+          data-show-toggle="true"
+          data-detail-view="false"
+          data-locale="es-cl"
+          data-icon-size="md"
+          data-icons-prefix="glyphicon"
+          showFooter="true"
+          data-id-field="id"
+          data-unique-id="id"
+          >
+          <thead>
+            <tr>
+              {% for thead in table_data.thead %}
+              <th data-field="{{ thead }}" data-sortable="true" class='text-center'>{{ thead }}</th>
+              {% endfor %}
+              <th class='text-center'><i class='fa fa-cogs fa-fw'></i>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in table_data.tbody %}
+            <tr  >
+              {% for value in row[1:] %}
+              <td data-field="" data-sortable="true" class='text-center'>{{ value|safe }}</td>
+              {% endfor %}
+                <td>
+                  <a href="{{ url_for('bodega_motores.editar', index = row[0]) }}  "><div class='btn btn-default' title='Editar'><i style='color:purple;' class="fa fa-pencil"></i> Editar</div></a>
+                </td>
+              </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <script>$('table').bootstrapTable();</script>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if section == 'crear' or section == 'editar' %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% if data %}Editar Ítem{% else %}Crear Nuevo Ítem{% endif %}</h3>
+  </div>
+  <div class="panel-body">
+    <div class='row'>
+      <form method='post' action="{% if data %}{{ url_for('bodega_motores.editar', index = data.id) }}{% else %}{{ url_for('bodega_motores.crear') }}{% endif %}">
+
+        <div class="form-group col-lg-6">
+          <label>Número de Presupuesto</label>
+          <input type="number" class="form-control" placeholder="Número de Presupuesto" name='presupuesto' required {% if data %} value='{{ data.presupuesto }}' {% endif %}>
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Motor</label>
+          <input type="text" class="form-control" placeholder="Motor" name='motor' {% if data %} value='{{ data.motor }}' {% endif %}>
+        </div>
+
+        <div class='col-lg-6 col-md-6'>
+          <div class="form-group">
+            <label>Fecha Ingreso</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+              <input class="form-control datepicker" required {% if data %} value='{{ data.fecha_ingreso }}' {% endif %} type="text" placeholder="" name='fecha_ingreso'>
+            </div>
+          </div>
+        </div>
+
+        <div class='col-lg-12'>
+          <div class="form-group">
+            <label>Observaciones</label>
+            <textarea class='ckeditor' name='observaciones'>{% if data %} {{ data.observaciones }} {% endif %}</textarea>
+          </div>
+        </div>
+
+        <div class="col-xs-12 text-right">
+          <a class='btn btn-warning' href="{{ url_for('bodega_motores.main') }}">Cancelar</a>
+          <input class='btn btn-primary' type='submit' value='{% if data %}Guardar{% else %}Crear{% endif %}'> 
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+

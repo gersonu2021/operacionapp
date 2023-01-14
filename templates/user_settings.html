@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="{% if section == 'datos-personales' %}active{% endif %}">
+    <a href="{{ url_for('user_settings.main') }}">Datos Personales</a>
+  </li>
+  <li role="presentation" class="{% if section == 'cambio-de-password' %}active{% endif %}">
+    <a href="{{ url_for('user_settings.cambio_de_password') }}">Cambio de Password</a>
+  </li>
+</ul>
+
+{# DATOS PERSONALES #}
+{% if section == 'datos-personales' %}
+<div class='panel panel-default'>
+  <div class='panel-heading'>Actualiza tus datos personales</div>
+  <div class='panel-body'>
+    {% if error %} <div class='alert alert-danger'>{{ error }}</div> {% endif %}
+    {% if actualizado %} <div class='alert alert-info'>Tus datos fueron actualizados.</div> {% endif %}
+    <form method='post' action=''>
+      <div class="form-group">
+        <label for'nombre'>Nombre</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-user'></span></div>
+          <input value="{{ user.nombre }}" type="text" class="form-control"  placeholder="Nombre" name='nombre'>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for'apellido'>Apellido</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-user'></span></div>
+          <input value="{{ user.apellido }}" type="text" class="form-control"  placeholder="Apellido" name='apellido'>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for'email'>Email</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-envelope'></span></div>
+          <input value="{{ user.email }}" type="text" class="form-control"  placeholder="Email" name='email'>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for'telefono'>Teléfono</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-earphone'></span></div>
+          <input value="{{ user.telefono }}" type="text" class="form-control"  placeholder="Teléfono" name='telefono'>
+        </div>
+      </div>
+      <input type='submit' class='btn btn-default' value='Actualizar'>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{# CAMBIO DE PASSWORD #}
+{% if section == 'cambio-de-password' %}
+<div class='panel panel-default'>
+  <div class='panel-heading'>Actualiza tu password</div>
+  <div class='panel-body'>
+    {% if error %} <div class='alert alert-danger'>{{ error }}</div> {% endif %}
+    {% if actualizado %} <div class='alert alert-info'>Tu password fue cambiado correctamente.</div> {% endif %}
+    <form method='post' action=''>
+      <div class="form-group">
+        <label class='sr-only' for'password_actual'>Password Actual</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></div>
+          <input value="" type="password" class="form-control"  placeholder="Password Actual" name='password_actual'>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class='sr-only' for'nuevo_password'>Nuevo Password</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></div>
+          <input value="" type="password" class="form-control"  placeholder="Nuevo Password" name='nuevo_password'>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class='sr-only' for'confirmacion'>Confirmación</label>
+        <div class="input-group">
+          <div class="input-group-addon"><span class='glyphicon glyphicon-lock'></span></div>
+          <input value="" type="password" class="form-control"  placeholder="Confirmacion Nuevo Password" name='confirmacion'>
+        </div>
+      </div>
+      <input type='submit' class='btn btn-default' value='Actualizar'>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,17 @@
+<div id='navigation'>
+	<div class='col-lg-2 col-md-3 col-sm-4'>
+		<div id='menu-left'>
+			<ul class='animated fadeIn'>
+				<li class='open' onclick="$(this).toggleClass('open'); $(this).next().toggle();">Configuraciones <i style='float:right; margin-right:1.2em;' class="fa fa-caret-down"></i></li>
+				<ul class='animated fadeIn'>
+					<li onclick="top.location.href='{{ url_for('admin_users') }}'">Usuarios</li>
+					<li onclick="top.location.href='{{ url_for('admin_regiones') }}'">Regiones</li>
+					
+				</ul>
+				<li onclick="top.location.href='#logout'"><i class="fa fa-sign-out"></i> Cerrar Sesión</li>
+			</ul>
+			<br/>
+			<p style='font-size:1em;'>Desarrollado por <a href='http://magna.cl/' target='_blank'>Magna</a></p>
+		</div>
+	</div>
+</div>

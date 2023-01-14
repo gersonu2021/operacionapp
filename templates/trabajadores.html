@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+<br/>
+
+{% if section == 'main' %}
+<div class='container'>
+  <div class='col-md-3'></div>
+  <div class='col-md-6'>
+    <div class="panel panel-default text-center">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class='fa fa-fw fa-users'></i> Ingresar Número de Maestro</h3>
+      </div>
+      <div class="panel-body">
+        <form method='post'>
+          <input type='number' name='id_maestro' class='form-control'>
+          <div class='row' style='margin-top:1em;'>
+            <input type='submit' class='btn btn-success' value='Ingresar'>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class='col-md-3'></div>
+</div>
+{% endif %}
+
+{% if section == 'ot' %}
+<div class='container'>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class='fa fa-fw fa-users'></i> Maestro </h3>
+    </div>
+    <div class="panel-body">
+      <h1>{{ maestro.nombre }}</h1>
+      <p>{{ maestro.id }}</p>
+      <p>{{ maestro.rut }}</p>
+      <br/>
+      <p> <a href="{{ url_for('trabajadores.salir') }}" class='btn btn-default'><i class="fa fa-sign-out" aria-hidden="true"></i> Salir</a></p>
+      <br/>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Orden de Trabajo # {{ data[0]['trabajos'][0]['orden_de_trabajo'] }}</h3>
+    </div>
+    <div class="panel-body">
+      {% for row in data %}
+      <div class="panel panel-default">
+        <div class="panel-heading" style="background-color:{{ row.categoria.color }};">
+          <h3 class="panel-title" style='color:white'>{{ row.categoria.nombre }}</h3>
+        </div>
+        <div class="panel-body">
+          <div class='table-responsive'>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Cant</th>
+                  <th>Trabajo Solicitado</th>
+                  <th class='visible-lg'>Comentario</th>
+                  <th>Inicio</th>
+                  <th>Término</th>
+                  <th>Maestro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for trabajo in row.trabajos %}
+                <tr>
+                  <td>{{ trabajo.cantidad }}</td>
+                  <td>{{ trabajo.nombre }}</td>
+                  <td class='visible-lg'>{{ trabajo.comentario }}</td>
+                  <td>
+                    {% if trabajo.fecha_inicio %} 
+                    {{ trabajo.fecha_inicio.strftime('%d-%m-%Y %H:%M:%S') }} 
+                    {% else %} 
+                    <a href="{{ url_for('trabajadores.iniciar', trabajo = trabajo.id, ot = ot) }}" class="btn btn-success"><i class="fa fa-calendar"></i> INICIAR</a> 
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if trabajo.fecha_termino %} 
+                    {{ trabajo.fecha_termino.strftime('%d-%m-%Y %H:%M:%S') }} 
+                    {% else %} 
+                    <a href="{{ url_for('trabajadores.terminar', trabajo = trabajo.id, ot = ot) }}" class="btn btn-primary"><i class="fa fa-calendar"></i> TERMINAR</a> 
+                    {% endif %}
+                  </td>
+                  <td>{{ trabajo['maestros.nombre'] if trabajo['maestros.nombre'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <a href="{{ url_for('trabajadores.salir') }}" class='btn btn-default'>Cambiar Maestro</a>
+    </div>
+  </div>
+
+</div>
+{% endif %}
+
+{% if section == 'seleccion_ot' %}
+<div class='container'>
+  <div class="panel panel-default text-center">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class='fa fa-fw fa-list'></i> Seleccionar OT</h3>
+    </div>
+    <div class="panel-body">
+      {% for trabajo in cola_de_trabajos %}
+      <div class='col-lg-3'> <a href="{{ url_for('trabajadores.main', orden_de_trabajo = trabajo.orden_de_trabajo ) }}" class='btn btn-default'>{% if trabajo.prioridad|int == 1 %}<i class='fa fa-fw fa-star' style='color:blue;'></i>{% endif %} Orden de Trabajo #{{ trabajo.orden_de_trabajo }}</a> </div>
+      {% endfor %}
+      <div class="col-lg-12 text-center margin-1"><a href="{{ url_for('trabajadores.salir') }}" class='btn btn-default'>Cambiar Maestro</a></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<script>
+//https://github.com/thorst/jquery-idletimer
+/*
+$(function() {
+  $( document ).idleTimer( 60 * 1000 );
+  $( document ).on( "idle.idleTimer", function(event, elem, obj){
+    console.log("Time Out");
+    window.location.href = "{{ url_for('trabajadores.salir' ) }}";
+  });
+});
+*/
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} Error {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% block main_content %}
+  <div class='row'>
+    <div class='col-xs-12'>
+      <div class="alert alert-danger text-center margin-1" role="alert">
+        {% for error in errors %}
+        <ul>
+            <li><p>{{ error|safe }}</p></li>
+          </ul>
+        {% endfor %}
+      </div>
+      <div class='text-center'>
+        {% if href %}
+        <a class='btn btn-danger' href='{{ href }}'>Aceptar</a>
+        {% else %}
+        {# <a class='btn btn-danger' href='../'>Aceptar</a> #}
+        <button class='btn btn-danger' onclick="goBack()">Volver</button>
+        <script>
+        function goBack() {
+            window.history.back();
+        }
+        </script>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+

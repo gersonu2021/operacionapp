@@ -1,0 +1,100 @@
+{% extends "admin/index.html" %}
+
+{% block title %} Home {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+
+{% block main_content %}
+<div class='text-center'>
+	{% if section_title %}
+		<h1>{{ section_title.title() }}</h1>
+	{% else %}
+		<br/><br/>
+		<div class='alert alert-danger'>Falta Tabla</div>
+		<a class='btn btn-default' href="{{ url_for('admin') }}">Volver</a>
+	{% endif %}
+	<br/>
+	<div class='row'>
+		<div class="table-responsive">
+			<form method='post' action='' id='form1' enctype="multipart/form-data">
+				<div class='table-responsive'>
+					<table class='table table-responsive table-striped' 
+						data-toggle="table" 
+						data-show-columns="true"
+						data-search="true"
+						data-pagination="true"
+						data-page-size="25"
+						data-sort-name="{{ columns.0.0 }}"
+						data-sort-order="desc"
+						data-show-export="true"
+						data-row-style="rowStyle"
+						>
+						<thead>
+							<tr>
+								{% for column in columns %}
+									<th data-field="{{ column.0 }}" data-sortable="false" class='text-center' >{{ column.2.decode('utf8') }}</th>
+								{% endfor %}
+
+								<th data-field="acciones" data-sortable="false" class='text-center' >Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for u in data %}		
+								<tr>
+									{% for column in columns %}
+										{% if column.1 == 'index' %}
+											<td>
+												<input type='number' name='{{ column.0 }}' value='{{ u[column.0] }}' style='display:none;'>
+												{{ u[column.0] }}
+											</td>
+										{% endif %}
+
+										{% if column.1 == 'boolean' %}
+											<td>
+												<select class='form-control'>
+													{% if u[column.0] %}
+														<option value='1' selected>Activo</option>
+														<option value='0'>Inactivo</option>
+													{% else %}
+														<option value='1'>Activo</option>
+														<option value='0' selected>Inactivo</option>
+													{% endif %}
+												</select>
+											</td>
+										{% endif %}
+
+										{% if column.1 == 'text' %}
+											<td>
+												<input class='form-control' type='text' name='{{ column.0 }}' value='{{ u[column.0] }}'> 
+											</td>
+										{% endif %}
+
+										{% if column.1 == 'pdf' or column.1 == 'img' or column.1 == 'video' %}
+											<td>
+												<input class='form-control' type='text' name='{{ column.0 }}' value='{{ u[column.0] }}'> 
+											</td>
+										{% endif %}
+									{% endfor %}
+									<td>
+									<a href='#'><div class='btn btn-default tooltip_on' title='Editar'><i style='color:green;' class="fa fa-pencil"></i></div></a>
+									<a href="#"><div class='btn btn-default tooltip_on' title='Eliminar'><i style='color:red;' class="fa fa-times"></i></div></a>
+								</td>
+								</tr>
+
+								
+								{% endfor %}
+							
+						</tbody>
+					</table>
+				</div>
+				<div class='row'>
+					<button type="submit" class="btn btn-success" style='width:100%;'>Actualizar Todos</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<br/>
+</div>
+{% endblock %}
+
+

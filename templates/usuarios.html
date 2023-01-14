@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% from 'macros.html' import default_table with context %}
+{% block main_content %}
+
+<div class='row'>
+
+  <br/>
+  {#
+  <div class='row text-left'>
+    {% if model.defaults.import %}
+    <a href='{{ request.url }}import'><div class='btn btn-success tooltip_on' title='Importar'><span class='glyphicon glyphicon-cloud-upload'></span> Importar</div></a>
+    {% endif %}
+    {% if model.defaults.export %}
+    <a href='{{ request.url }}export'><div class='btn btn-info tooltip_on' title='Exportar'><span class='glyphicon glyphicon-cloud-download'></span> Exportar</div></a>
+    {% endif %}
+  </div>
+  <br/>
+  #}
+
+  {% if method == 'table_view' %}
+    <div class='row text-left'>
+      <form method='get' action='{{ request.url }}crear/'>
+        <div class='col-md-4 col-sm-6 col-xs-6'>
+          <div class="form-group">
+            <label class='sr-only' for'dni'>DNI</label>
+            <div class="input-group">
+              <div class="input-group-addon"><span class='glyphicon glyphicon-user'></span></div>
+              <input class='form-control' type='text' placeholder='DNI' name='dni'>
+            </div>
+          </div>
+        </div>
+        <button class='btn btn-primary tooltip_on' title='Crear'><span class='glyphicon glyphicon-plus'></span> Agregar</button>
+        <!-- <a href='{{ request.url }}crear'><div class='btn btn-primary tooltip_on' title='Crear'><span class='glyphicon glyphicon-plus'></span> Agregar</div></a> -->
+        {% if model.defaults.import %}
+        <a href='{{ request.url }}import'><div class='btn btn-success tooltip_on' data-toggle="tooltip" title='Carga masiva de datos a través de archivo en formato Excel .xlsx'><span class='glyphicon glyphicon-cloud-upload'></span> Importar</div></a>
+        {% endif %}
+        {% if model.defaults.export %}
+        <a href='{{ request.url }}export'><div class='btn btn-info tooltip_on' data-toggle="tooltip" title='Exportar la base de datos en archivo en formato Excel .xlsx'><span class='glyphicon glyphicon-cloud-download'></span> Exportar</div></a>
+        {% endif %}
+      </form>
+    </div>
+    <br/> 
+    {% if user['admin'] %}
+      {{ default_table(model, data, ['edit', 'delete']) }}
+    {% else %}
+      {{ default_table(model, data, ['delete']) }}
+    {% endif %}
+  {% endif %}
+
+  {% if method == 'create' %}
+    {% if submited %}
+      <br/>
+      <div class='text-center'>
+        {% if submited == 1 %}
+        <div class="alert alert-success " role="alert">El usuario ha sido creado correctamente.<br/><br/> Se ha enviado un correo al usuario con sus credenciales de conexión.
+        </div>
+        {% else %}
+          <div class="alert alert-danger " role="alert">Ha ocurrido un error. Por favor vuelve atrás e intentalo nuevamente.</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class='panel panel-default'>
+    <div class='panel-heading'>Crear Nuevo</div>
+      <div class='panel-body'>
+        <form method='post' action=''  role='form'>
+
+          <div class="form-group">
+            <label class='sr-only' for'nombre'>Nombre</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-user fa-fw'></i></div>
+              <input value="" type="text" class="form-control" placeholder="Nombre" name='nombre'>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class='sr-only' for'apellido'>Apellido</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-user fa-fw'></i></div>
+              <input value="" type="text" class="form-control" placeholder="Apellido" name='apellido'>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class='sr-only' for'email'>Email</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-envelope fa-fw'></i></div>
+              <input value="" type="text" class="form-control" placeholder="Email" name='email'>
+            </div>
+          </div>
+
+          {% if empresas|length > 1 %}
+            <select class="form-control selectpicker show-tick" data-live-search="true" name='empresa'>
+              <option data-tokens="" disabled selected data-icon="fa fa-briefcase fa-fw"> Selecciona una empresa</option>
+              {% for empresa in empresas %}
+              <option data-icon="fa fa-briefcase fa-fw" data-tokens="{{empresa.razon_social }} {{ empresa.dni }}" value="{{ empresa.id }}">{{ empresa.razon_social }} ({{ empresa.dni }})</option>
+              {% endfor %}
+            </select>
+            <br/>
+            <br/>
+          {% else %}
+          <input type='hidden' name="empresa" value="{{ empresa.id }}" class='form-control' placegolder='Empresa'>
+          {% endif %}
+          
+
+          <div class="form-group">
+            <label class='sr-only' for'telefono'>Teléfono</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-phone fa-fw'></i></div>
+              <input value="" type="text" class="form-control" placeholder="Teléfono" name='telefono'>
+            </div>
+          </div>
+          
+          <input value="{{ dni }}" type="hidden" class="form-control" placeholder="DNI" name='dni'>
+              
+          {#
+          <div class="form-group">
+            <label class='sr-only' for'aseguradora'>Aseguradora</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-briefcase fa-fw'></i></div>
+              <input value="{{ aseguradora.razon_social }}" type="text" class="form-control" disabled >
+            </div>
+          </div>
+          #}
+
+          {#
+          <div class="form-group">
+            <label class='sr-only' for'permisos'>Permisos</label>
+            <div class="input-group">
+              <div class="input-group-addon"><i class='fa fa-briefcase fa-fw'></i></div>
+              <input value="{{ permisos }}" type="text" class="form-control" disabled >
+            </div>
+          </div>
+          #}
+          
+          <div class='text-center'>
+            <button type="submit" class="btn btn-primary"><span class='glyphicon glyphicon-plus'></span> Crear</button>
+            <a class='btn btn-danger' href='../'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if method == 'vincular' %}
+  <div class='panel panel-default'>
+    <div class='panel-heading'>Vincular Usuario</div>
+    <div class='panel-body'>
+      {% if submited %}
+        <br/>
+        <div class='text-center'>
+          <div class="alert alert-success " role="alert">Usuario vinculado correctamente.</div>
+          <a class='btn btn-success' href='../'>Aceptar</a>
+        </div>
+      {% else %}
+
+        {% if empresas %}
+          <div class='text-center'>
+            <form action='' method=post>
+              <h2> El usuaro se vinculará a la siguiente empresa: </h2>
+              <br/>
+              <select class="form-control selectpicker show-tick" data-live-search="true" name='empresa'>
+                {% for empresa in empresas %}
+                <option value='{{ empresa.id }}'>{{ empresa.razon_social }} ({{ empresa.dni }})</option> 
+                {% endfor %}
+              </select>
+              <br/>
+              <br/>
+              <button type="submit" class="btn btn-danger"><span class='glyphicon glyphicon-pencil'></span> Vincular</button>
+              <a class='btn btn-warning' href='{{ url_for('usuarios_blueprint.usuarios') }}'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+            </form>
+          </div>
+        {% else %}
+          <h1>No existe inguna empresa disponible para vincular al usuario seleccionado.</h1>
+          <a class='btn btn-warning' href='../'>Volver</a>
+        {% endif %}
+
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  
+
+  {% if method == 'desvincular' %}
+  <div class='panel panel-default'>
+    <div class='panel-heading'>Eliminar</div>
+    <div class='panel-body'>
+      {% if deleted %}
+        <br/>
+        <div class='text-center'>
+          <div class="alert alert-success " role="alert">Eliminado correctamente.</div>
+          <a class='btn btn-success' href='../'>Aceptar</a>
+        </div>
+      {% else %}
+
+        {% if data %}
+          <h1> ¿Desvincular usuario de su empresa? </h1>
+          <div class='text-center'>
+            <form action='' method=post>
+              <button type="submit" class="btn btn-danger"><span class='glyphicon glyphicon-pencil'></span> Desvincular</button>
+              <a class='btn btn-warning' href='../'><span class='glyphicon glyphicon-remove'></span> Cancelar</a>
+            </form>
+          </div>
+        {% else %}
+          <h1>Ítem no existe</h1>
+          <a class='btn btn-warning' href='../'>Volver</a>
+        {% endif %}
+
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

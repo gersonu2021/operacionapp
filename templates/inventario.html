@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %} Inventario {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+
+{% from "macros.html" import responsive_table with context %}
+
+{% block main_content %}
+
+{% if section == 'main' %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Inventario</h3>
+  </div>
+  <div class="panel-body">
+
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <div class="input-group">
+          <input name="search" id="search_input" type="text" class="form-control" placeholder="Buscar por Nombre o SKU" onkeyup="if(event.keyCode=='13'){search()}">
+          <span class="input-group-btn">
+            <button onclick="search()" class="btn btn-default" type="button">&nbsp;<span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+            <script>
+              function search(){
+                window.location.href="{{ url_for('inventario.main') }}search/" + $('#search_input').val();
+              }
+            </script>
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+
+    <div class='row'>
+      <a class="btn btn-success" href="{{ url_for('inventario.crear') }}"><span class='glyphicon glyphicon-plus'></span> Crear</a>
+
+      <div class="table-responsive">
+        <table class='table table-responsive table-striped' 
+          data-toggle="table" 
+          data-show-columns="true"
+          data-search="false"
+          data-pagination="true"
+          data-page-size="25"
+          data-sort-name="id"
+          data-sort-order="desc"
+          data-show-export="true"
+          data-row-style="rowStyle"
+          data-show-toggle="true"
+          data-detail-view="false"
+          data-locale="es-cl"
+          data-icon-size="md"
+          data-icons-prefix="glyphicon"
+          showFooter="true"
+          data-id-field="id"
+          data-unique-id="id"
+          >
+          <thead>
+            <tr>
+              {% for thead in table_data.thead %}
+              <th data-field="{{ thead }}" data-sortable="true" class='text-center'>{{ thead }}</th>
+              {% endfor %}
+              <th class='text-center'><i class='fa fa-cogs fa-fw'></i>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in table_data.tbody %}
+            <tr  >
+              {% for value in row[1:] %}
+              <td data-field="" data-sortable="true" class='text-center'><span {% if row[3] < row[4] %} style="color:red;" {% endif %}>{{ value|safe }}</span></td>
+              {% endfor %}
+                <td>
+                  <a href="{{ url_for('inventario.editar', index = row[0] )  }}"><div class='btn btn-default' title='Editar'><i style='color:purple;' class="fa fa-pencil"></i> Editar</div></a>
+                  <a href="{{ request.url }}retirar/{{ row[0] }}"><div class='btn btn-default' title='Editar'><i style='color:green;' class="fa fa-upload"></i> Retirar</div></a>
+                </td>
+              </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <script>$('table').bootstrapTable();</script>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if section == 'crear' or section == 'editar' %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% if cliente %}Editar Ítem{% else %}Crear Nuevo Ítem{% endif %}</h3>
+  </div>
+  <div class="panel-body">
+    <div class='row'>
+      <form method='post' action="{% if cliente %}{{ url_for('clientes.editar', id = cliente.id) }}{% else %}{{ url_for('clientes.crear') }}{% endif %}">
+        <div class="form-group col-lg-6">
+          <label>RUT Cliente</label>
+          <input type="text" class="form-control" placeholder="RUT" {% if cliente %} value='{{ cliente.rut }}' {% endif %} name='rut' required>
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Dirección</label>
+          <input type="text" class="form-control" placeholder="Dirección" name='direccion' {% if cliente %} value='{{ cliente.direccion }}' {% endif %} >
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Nombre o Razón Social</label>
+          <input type="text" class="form-control" placeholder="Nombre o Razón Social" name='razon_social' required {% if cliente %} value='{{ cliente.razon_social }}' {% endif %}>
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Teléfono</label>
+          <input type="text" class="form-control" placeholder="Telefono" name='telefono' {% if cliente %} value='{{ cliente.telefono }}' {% endif %}>
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Email</label>
+          <input type="email" class="form-control" placeholder="Email" name='email' required {% if cliente %} value='{{ cliente.email }}' {% endif %}>
+        </div>
+        <div class="form-group col-lg-6">
+          <label>Giro</label>
+          <input type="text" class="form-control" placeholder="Giro" name='giro' {% if cliente %} value='{{ cliente.giro }}' {% endif %}>
+        </div>
+        <div class="col-xs-12 text-right">
+          <a class='btn btn-warning' href="{{ url_for('clientes.main') }}">Cancelar</a>
+          <input class='btn btn-primary' type='submit' value='{% if cliente %}Guardar{% else %}Crear{% endif %}'> 
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if section == 'retirar' and item %}
+<div id='inventario-retirar'>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Retirar</h3>
+    </div>
+    <div class="panel-body">
+      <div class='row'>
+        <div class='row text-left'>
+          <a href="{{ url_for('inventario.main') }}"><i class='fa fa-fw fa-chevron-left'></i> Volver</a>
+        </div>
+        <div class='row'>
+          <div class='col-lg-4'></div>
+          <div class='col-lg-4'>
+            {#
+            <div class='text-center'>
+              <p>Stock Disponible: {{ item.stock }}</p>
+              <h2>{{ item.nombre }}</h2>
+              <p>SKU: {{ item.sku }}</p>
+            </div>
+            #}
+            <ul class="list-group">
+              <li class="list-group-item text-center list-group-item-success">
+                {{ item.nombre }}
+              </li>
+              <li class="list-group-item list-group-item-primary">
+                <span class="badge">{{ item.stock }}</span>
+                Stock Disponible
+              </li>
+              <li class="list-group-item list-group-item-primary">
+                <span class="badge">{{ item.sku }}</span>
+                SKU
+              </li>
+            </ul>
+          </div>
+          <div class='col-lg-4'></div>
+        </div>
+
+        <div class='row'>
+          <div class='col-lg-4'></div>
+          <div class='col-lg-4'>
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button onclick="$('#cantidad').val(+$('#cantidad').val() - 1);" class="btn btn-danger" type="button">&nbsp;<i class='fa fa-fw fa-minus'></i>&nbsp;</button>
+              </span>
+              <input type='number' class="form-control text-center" aria-label="Cantidad" value='1' name='cantidad' id='cantidad' min='1'>
+              <span class="input-group-btn">
+                <button onclick="$('#cantidad').val(+$('#cantidad').val() + 1);" class="btn btn-primary" type="button">&nbsp;<i class='fa fa-fw fa-plus'></i>&nbsp;</button>
+              </span>
+            </div>
+          </div>
+          <div class='col-lg-4'></div>
+        </div>
+        <div class='row text-center'>
+          <input onclick="window.open('{{ url_for('inventario.retirar') }}{{ item.id }}/' + $('#cantidad').val(),'_self')" type='submit' class='btn btn-success' value='Retirar'>
+        </div>
+        <script>
+        //var num = +$("#originalnum").val() + 1;
+        //$("#originalnum").val(num);
+        </script>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+

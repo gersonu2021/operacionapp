@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} {{ model.title }} {% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% from 'macros.html' import blueimp_gallery with context %}
+{% from 'macros.html' import default_form %}
+
+{% block main_content %}
+{#{ blueimp_gallery() }#}
+<h2>{{ model.title }}</h2>
+<br/>
+<div class='panel panel-default'>
+  <div class='panel-heading'>Editar</div>
+  <div class='panel-body'>
+    {% if submited %}
+      <br/>
+      <div class='text-center'>
+        {% if submited == 1 %}
+          <div class="alert alert-success " role="alert">Editado correctamente.</div>
+          <a class='btn btn-success' href='..'>Aceptar</a>
+        {% else %}
+          <div class="alert alert-danger " role="alert">Ha ocurrido un error. Por favor vuelve atrás e intentalo nuevamente.</div>
+          <a class='btn btn-danger' href='..'>Volver</a>
+        {% endif %}
+      </div>
+    {% else %}
+      {{ default_form(data, model) }}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

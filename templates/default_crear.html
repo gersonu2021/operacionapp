@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{% if model %}{{ model.title }}{% endif %}{% endblock %}
+{% block keywords %}  {% endblock %}
+{% block description %}  {% endblock %}
+{% from 'macros.html' import default_form with context %}
+{% block main_content %}
+<h2>{{ model.title }}</h2>
+<br/>
+<div class='panel panel-default'>
+  <div class='panel-heading'>Crear Nuevo</div>
+  <div class='panel-body'>
+    {% if submited %}
+      <br/>
+      <div class='text-center'>
+        {% if submited == 1 %}
+          <div class="alert alert-success " role="alert">Creado correctamente.</div>
+          <a class='btn btn-info' href='.'>Crear Nuevo(a)</a>
+          <a class='btn btn-default' href='../'>Volver</a>
+        {% else %}
+          <div class="alert alert-danger " role="alert">Ha ocurrido un error. Por favor vuelve atrás e intentalo nuevamente.</div>
+          <a class='btn btn-danger' href='.'>Volver</a>
+        {% endif %}
+      </div>
+    {% else %}
+      {{ default_form(data, model) }}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
